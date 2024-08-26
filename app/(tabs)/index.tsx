@@ -1,52 +1,69 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Platform,
+  SafeAreaView,
+  View,
+  ScrollView,
+  FlatList,
+} from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { AddressViewer } from '@/components/AddressViewer';
+import Animated from 'react-native-reanimated';
+import PlaySessionItem from '@/components/PlaySessionItem';
+
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+    location: 'Quadras externas da UFSC',
+    sportLabel: 'Vôlei',
+    confirmedPlayers: 3,
+    interestedPlayers: 11,
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+    location: 'Quadras externas da UFSC',
+    sportLabel: 'Vôlei',
+    confirmedPlayers: 3,
+    interestedPlayers: 11,
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+    location: 'Quadras externas da UFSC',
+    sportLabel: 'Vôlei',
+    confirmedPlayers: 3,
+    interestedPlayers: 11,
+  },
+];
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <SafeAreaView style={{ flex: 1 }}>
+      <AddressViewer></AddressViewer>
+      <Animated.ScrollView>
+        <FlatList
+          data={DATA}
+          renderItem={({ item }) => (
+            <PlaySessionItem
+              title={item.title}
+              id={item.id}
+              location={item.location}
+              sportLabel={item.sportLabel}
+              confirmedPlayers={item.confirmedPlayers}
+              interestedPlayers={item.interestedPlayers}
+            />
+          )}
+          keyExtractor={(item) => item.id}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      </Animated.ScrollView>
+    </SafeAreaView>
   );
 }
 
