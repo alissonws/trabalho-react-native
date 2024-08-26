@@ -85,4 +85,7 @@ export const TIME_OPTIONS: string[] = [
   '23:30',
 ];
 
-export const SPORTS: Sport[] = [{ label: 'Vôlei' }, { label: 'futebol' }];
+export const SPORTS: Sport[] = [
+  { label: 'Vôlei', id: 'volei' },
+  { label: 'Futebol', id: 'futebol' },
+];
