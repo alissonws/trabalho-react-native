@@ -1,6 +1,8 @@
+import LoginForm from '@/components/LoginForm';
 import { SelectedSportsList } from '@/components/SelectedSportsList';
 import { ThemedText } from '@/components/ThemedText';
 import { SPORTS, TIME_OPTIONS } from '@/constants/mockData';
+import { useAuth } from '@/hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addSport, selectSports } from '@/store/reducers/userSlice';
 import { Picker } from '@react-native-picker/picker';
@@ -8,8 +10,13 @@ import { SafeAreaView, ScrollView, View } from 'react-native';
 
 export default function ProfileScreen() {
   const dispatch = useAppDispatch();
-
+  const { isLoggedIn } = useAuth();
   const selectedSports = useAppSelector(selectSports);
+
+  if (!isLoggedIn) {
+    return <LoginForm />;
+  }
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

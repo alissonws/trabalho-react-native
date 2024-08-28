@@ -6,14 +6,24 @@ import { RootState } from '../store';
 
 // Define the TS type for the user slice's state
 export interface UserState {
-  name: string;
+  personalInfo: {
+    name: string;
+  };
+  auth: {
+    jwt: string;
+  };
   sports: Sport[];
   availableTimes: AvailableTime[];
 }
 
 // Define the initial value for the slice state
 const initialState: UserState = {
-  name: '',
+  personalInfo: {
+    name: '',
+  },
+  auth: {
+    jwt: '',
+  },
   sports: [],
   availableTimes: [],
 };
@@ -23,7 +33,6 @@ const initialState: UserState = {
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     addSport: (state, action: PayloadAction<Sport>) => {
       const sportAlreadyExists = state.sports.filter(
@@ -37,7 +46,6 @@ export const userSlice = createSlice({
         (sport) => sport.id !== action.payload.id
       );
     },
-    // Use the PayloadAction type to declare the contents of `action.payload`
     addAvailableTime: (state, action: PayloadAction<AvailableTime>) => {
       const newAvailableTimeConcat = [
         action.payload.weekDay,
@@ -74,23 +82,74 @@ export const userSlice = createSlice({
           ].concat()
       );
     },
+    setJwtToken: (state, action: PayloadAction<string>) => {
+      state.auth.jwt = action.payload;
+    },
+    clearAuth: (state) => {
+      state.auth.jwt = '';
+    },
   },
   selectors: {
     selectAvailableTimes: (userState) => userState.availableTimes,
     selectSports: (userState) => userState.sports,
+    selectJwtToken: (userState) => userState.auth.jwt,
+    selectIsLoggedIn: (userState) => !!userState.auth.jwt,
   },
 });
 
-// Export the generated action creators for use in components
-export const { addSport, removeSport, addAvailableTime, removeAvailableTime } =
-  userSlice.actions;
+export const { 
+  addSport, 
+  removeSport, 
+  addAvailableTime, 
+  removeAvailableTime,
+  setJwtToken,
+  clearAuth
+} = userSlice.actions;
 
-// export const selectAvailableTimes = (state: RootState) =>
-//   state.user.availableTimes;
-// export const selectSports = (state: RootState) => state.user.sports;
-
-// Export the slice reducer for use in the store configuration
 export default userSlice.reducer;
 
 export const selectSports = userSlice.selectors.selectSports;
 export const selectAvailableTimes = userSlice.selectors.selectAvailableTimes;
+export const selectJwtToken = userSlice.selectors.selectJwtToken;
+export const selectIsLoggedIn = userSlice.selectors.selectIsLoggedIn;
+
+import { API_URL } from '@/config';
+
+// API calls using createAsyncThunk with native fetch
+export const registerUser = createAsyncThunk(
+  'user/register',
+  async (userData: { username: string; email: string; password: string }, { dispatch }) => {
+    const response = await fetch(`${API_URL}/api/auth/local/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Registration failed');
+    }
+    dispatch(setJwtToken(data.jwt));
+    return data;
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  'user/login',
+  async (credentials: { identifier: string; password: string }, { dispatch }) => {
+    const response = await fetch(`${API_URL}/api/auth/local`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Login failed');
+    }
+    dispatch(setJwtToken(data.jwt));
+    return data;
+  }
+);
