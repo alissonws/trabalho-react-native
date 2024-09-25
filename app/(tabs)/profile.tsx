@@ -19,8 +19,8 @@ export default function ProfileScreen({ navigation }: any) {
 
   if (!isLoggedIn) {
     return (
-      <SafeAreaView>
-        <ThemedText style={{ color: 'white' }}>{isLoggedIn ? 'logado' : 'não lgado'}</ThemedText>
+      <SafeAreaView style={{ padding: 32 }}>
+        <ThemedText style={{ color: 'white', textAlign: 'center' }}>{isLoggedIn ? 'logado' : 'Não conectado'}</ThemedText>
         <LoginForm />
       </SafeAreaView>
     );

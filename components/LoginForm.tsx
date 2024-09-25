@@ -39,12 +39,8 @@ const LoginForm = () => {
         style={{ color: 'white' }}
       />
       <Button title={btnMessage} onPress={handleLogin} />
-      <Text>
+      <Text style={{ padding: 10, textAlign: 'center' }}>
         Não tem uma conta? <Link href="/sign-up">Cadastre-se</Link>
-      </Text>
-      <Text
-        >
-        {isLoggedIn ? 'Você está logado' : 'Você não está logado'}
       </Text>
     </SafeAreaView>
   );
