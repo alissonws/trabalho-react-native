@@ -1,28 +1,36 @@
 import LoginForm from '@/components/LoginForm';
 import { SelectedSportsList } from '@/components/SelectedSportsList';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { SPORTS, TIME_OPTIONS } from '@/constants/mockData';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addSport, selectSports } from '@/store/reducers/userSlice';
 import { Picker } from '@react-native-picker/picker';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const dispatch = useAppDispatch();
   const { isLoggedIn } = useAuth();
+  const [isLogged, setIsLoggedIn] = useState(isLoggedIn);
   const selectedSports = useAppSelector(selectSports);
 
   if (!isLoggedIn) {
-    return <LoginForm />;
+    return (
+      <SafeAreaView>
+        <ThemedText style={{ color: 'white' }}>{isLoggedIn ? 'logado' : 'não lgado'}</ThemedText>
+        <LoginForm />
+      </SafeAreaView>
+    );
   }
-
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ padding: 32 }}>
         <ThemedText type="title">Alisson Corrêa</ThemedText>
-        <View style={{ marginTop: 32 }}>
+        <ThemedView style={{ marginTop: 32 }}>
           <ThemedText style={{ fontWeight: 'bold' }}>
             Adicionar esporte:
           </ThemedText>
@@ -51,7 +59,7 @@ export default function ProfileScreen() {
               <Picker.Item key={id} label={option}></Picker.Item>
             ))}
           </Picker>
-        </View>
+        </ThemedView>
       </ScrollView>
     </SafeAreaView>
   );

@@ -2,11 +2,12 @@ import {
   Image,
   StyleSheet,
   Platform,
-  SafeAreaView,
   View,
   ScrollView,
   FlatList,
+  Text,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -15,6 +16,12 @@ import { ThemedView } from '@/components/ThemedView';
 import { AddressViewer } from '@/components/AddressViewer';
 import Animated from 'react-native-reanimated';
 import PlaySessionItem from '@/components/PlaySessionItem';
+import CurrencyInput from '@/components/CurrencyInput';
+import { useState } from 'react';
+import { useLocations } from '@/hooks/useLocations';
+import { useProducts } from '@/hooks/useProducts';
+import { Link, Redirect } from 'expo-router';
+import { useAuth } from '@/hooks/useAuth';
 
 const DATA = [
   {
@@ -44,30 +51,44 @@ const DATA = [
 ];
 
 export default function HomeScreen() {
+  const [newPrice, setNewPrice] = useState<number>(0);
+  const { isLoggedIn } = useAuth();
+  const { products } = useProducts();
+  console.log('products', products)
+
+  if (!isLoggedIn) {
+    return (
+      <Redirect
+        href={{
+          pathname: '/(tabs)/profile',
+        }}
+      ></Redirect>
+    );
+  }
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <AddressViewer></AddressViewer>
-      <Animated.ScrollView>
-        <FlatList
-          data={DATA}
-          renderItem={({ item }) => (
-            <PlaySessionItem
-              title={item.title}
-              id={item.id}
-              location={item.location}
-              sportLabel={item.sportLabel}
-              confirmedPlayers={item.confirmedPlayers}
-              interestedPlayers={item.interestedPlayers}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      </Animated.ScrollView>
+    <SafeAreaView style={styles.container}>
+      <ThemedText type="title">Itens salvos:</ThemedText>
+      <FlatList
+        data={products}
+        renderItem={({ item }) => (
+          <ThemedView>
+            <Link href={{ pathname: `/products/[ean]`, params: { ean: item.ean } }}>
+              <ThemedText> {item.name}</ThemedText>
+            </Link>
+          </ThemedView>
+        )}
+        keyExtractor={(item) => item.ean}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 32,
+    flex: 1,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',

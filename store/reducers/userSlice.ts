@@ -138,6 +138,7 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   'user/login',
   async (credentials: { identifier: string; password: string }, { dispatch }) => {
+    console.log('sending request')
     const response = await fetch(`${API_URL}/api/auth/local`, {
       method: 'POST',
       headers: {
@@ -146,6 +147,7 @@ export const loginUser = createAsyncThunk(
       body: JSON.stringify(credentials),
     });
     const data = await response.json();
+    console.log('data', data)
     if (!response.ok) {
       throw new Error(data.error || 'Login failed');
     }

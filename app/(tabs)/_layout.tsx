@@ -21,6 +21,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          unmountOnBlur: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? 'home' : 'home-outline'}
@@ -34,6 +35,20 @@ export default function TabLayout() {
         options={{
           href: null,
           title: 'Explore',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? 'code-slash' : 'code-slash-outline'}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          headerShown: true,
+          title: 'Scan',
+          unmountOnBlur: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? 'code-slash' : 'code-slash-outline'}
@@ -80,6 +95,18 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="products/[ean]"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="products/set/[ean]"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
